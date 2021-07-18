@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import useFetch from "../../useFetch";
 
 const WorkList = () => {
-  const { data: works, isPending, error } = useFetch('http://localhost:8000/api/works/');
+  const { data: works, isPending, error } = useFetch('http://backend.mneia.gr/api/works/');
 
   return (
     <>

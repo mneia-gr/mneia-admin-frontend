@@ -13,7 +13,7 @@ const WorkCreate = () => {
     e.preventDefault();
     const work = { name };
 
-    axios.post('http://localhost:8000/api/works/', work)
+    axios.post('http://backend.mneia.gr/api/works/', work)
       .then((response) => {
         console.log(JSON.stringify(response.data))
         setIsPending(false)

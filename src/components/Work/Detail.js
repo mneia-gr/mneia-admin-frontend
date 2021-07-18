@@ -6,7 +6,7 @@ import rehypeRaw from "rehype-raw";
 
 const WorkDetail = () => {
   const { id } = useParams();
-  const { data: work, isPending, error } = useFetch('http://localhost:8000/api/works/' + id + '/')
+  const { data: work, isPending, error } = useFetch('http://backend.mneia.gr/api/works/' + id + '/')
 
   return (
     <div>

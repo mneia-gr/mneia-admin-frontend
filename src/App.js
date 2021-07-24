@@ -1,29 +1,44 @@
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import WorkList from './components/Work/List';
 import WorkDetail from './components/Work/Detail';
 import WorkCreate from './components/Work/Create';
 import { Helmet } from 'react-helmet';
+import Container from 'react-bootstrap/Container';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import { LinkContainer } from 'react-router-bootstrap';
+import './index.css'
 
 function App() {
   return (
     <Router>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="container">
-          <Link className="navbar-brand p-0" to="/">
-            <img src="/favicon-32x32.png" alt="" width="24" height="24" className="d-inline-block align-text-top" />
-            <span className="px-2">Μνεία</span>
-          </Link>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <Link className="nav-link" to="/works">Works</Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+      <Navbar bg="light" expand="lg">
+        <Container>
+          <LinkContainer to="/">
+            <Navbar.Brand>
+              <img
+                alt="Mneia"
+                src="/favicon-32x32.png"
+                width="24"
+                height="24"
+                className="d-inline-block"
+              />{' '}
+              Μνεία
+            </Navbar.Brand>
+          </LinkContainer>
 
-      <div className="container">
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <LinkContainer to="/works">
+                <Nav.Link>Works</Nav.Link>
+              </LinkContainer>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+
+      <Container>
         <Switch>
           <Route exact path="/works">
             <WorkList />
@@ -35,7 +50,7 @@ function App() {
             <WorkDetail />
           </Route>
         </Switch>
-      </div>
+      </Container>
 
       <Helmet><title>Μνεία</title></Helmet>
 

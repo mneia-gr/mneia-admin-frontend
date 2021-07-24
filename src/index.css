@@ -1,3 +1,22 @@
+@import url('https://fonts.googleapis.com/css?family=EB+Garamond');
+
+nav.navbar {
+  margin-bottom: 1.5rem;
+}
+
 .work-sidebar {
   border-left: 1px solid lightgray;
+}
+
+.work h1 {
+    font-family: "EB Garamond";
+    font-weight: bold;
+    border-bottom: 1px solid lightgrey;
+    line-height: 2.4rem;
+    margin-bottom: 1rem;
+}
+
+.work .content {
+  font-family: "EB Garamond";
+  font-size: 1.5rem;
 }

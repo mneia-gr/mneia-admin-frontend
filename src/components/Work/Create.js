@@ -32,7 +32,7 @@ const WorkCreate = () => {
 
 
       <Form onSubmit={handleSubmit}>
-        <Form.Group as={Row} className="mb-3" controlId="formBasicEmail">
+        <Form.Group as={Row} className="mb-3">
           <Form.Label column md={1}>Name:</Form.Label>
           <Col md={11}>
             <Form.Control

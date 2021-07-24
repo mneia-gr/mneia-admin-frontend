@@ -1,4 +1,3 @@
-import { Helmet } from "react-helmet";
 import { useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -38,6 +37,7 @@ const WorkDetail = () => {
           setWorkIsLoading(false);
           setWork(response.data);
           getWorkType(response.data);
+          document.title = response.data.name;
         })
     },
     [id]
@@ -77,10 +77,10 @@ const WorkDetail = () => {
       {workIsLoading && <div>Loading...</div>}
       {work && (
         <>
-          <article>
+          <article className="work">
             <h1>{work.name}</h1>
             <Row>
-              <Col md={10}>
+              <Col md={10} className="content">
                 <ReactMarkdown rehypePlugins={[rehypeRaw]} children={work.content} />
               </Col>
               <Col md={2} className="work-sidebar">
@@ -106,9 +106,6 @@ const WorkDetail = () => {
               </Col>
             </Row>
           </article>
-          <Helmet>
-            <title>{work.name}</title>
-          </Helmet>
         </>
       )}
     </div>

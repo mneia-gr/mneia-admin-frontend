@@ -7,6 +7,8 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { LinkContainer } from 'react-router-bootstrap';
+import PeopleList from './components/Person/List';
+
 
 function App() {
   return (
@@ -32,6 +34,9 @@ function App() {
               <LinkContainer to="/works">
                 <Nav.Link>Works</Nav.Link>
               </LinkContainer>
+              <LinkContainer to="/people">
+                <Nav.Link>People</Nav.Link>
+              </LinkContainer>
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -47,6 +52,9 @@ function App() {
           </Route>
           <Route path="/works/:id">
             <WorkDetail />
+          </Route>
+          <Route exact path="/people">
+            <PeopleList />
           </Route>
         </Switch>
       </Container>

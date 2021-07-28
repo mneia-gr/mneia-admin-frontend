@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 // React Router
 import { useParams } from "react-router-dom";
 // React Bootstrap
+import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Col from "react-bootstrap/Col";
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -14,6 +15,8 @@ import rehypeRaw from "rehype-raw";
 import axios from "axios";
 import PersonWorkRelationshipListItem from "../PersonWorkRelationship/ListItem";
 import AreaWorkRelationshipListItem from "../AreaWorkRelationship/ListItem";
+import PersonWorkRelationshipAddModal from "../PersonWorkRelationship/AddModal";
+import AreaWorkRelationshipAddModal from '../AreaWorkRelationship/AddModal';
 
 const WorkDetail = () => {
   const { id } = useParams();
@@ -24,12 +27,17 @@ const WorkDetail = () => {
   const [workTypes, setWorkTypes] = useState([]);
   const [personWorkRelationships, setPersonWorkRelationships] = useState();
   const [areaWorkRelationships, setAreaWorkRelationships] = useState();
+  // Modals:
+  const [isVisibleModalAddPersonWorkRelationship, setIsVisibleModalAddPersonWorkRelationship] = useState(false);
+  const [isVisibleAreaWorkRelationshipAddModal, setIsVisibleAreaWorkRelationshipAddModal] = useState(false);
 
   const getPersonWorkRelationships = (work) => {
     axios
       .get(`http://backend.mneia.gr/api/person-work-relationships/?work=${work.id}`)
       .then((response) => {
-        setPersonWorkRelationships(response.data);
+        if (response.data.length !== 0) {
+          setPersonWorkRelationships(response.data);
+        }
       })
   }
 
@@ -37,7 +45,9 @@ const WorkDetail = () => {
     axios
       .get(`http://backend.mneia.gr/api/area-work-relationships/?work=${work.id}`)
       .then((response) => {
-        setAreaWorkRelationships(response.data);
+        if (response.data.length !== 0) {
+          setAreaWorkRelationships(response.data);
+        }
       })
   }
 
@@ -136,39 +146,79 @@ const WorkDetail = () => {
                     }
                   </Card.Body>
                 </Card>
-                <Card>
-                  <Card.Header as="h5">Συνδέσεις</Card.Header>
-                  <Card.Body>
-                    {personWorkRelationships &&
-                      <>
-                        <h6>Πρόσωπα</h6>
-                        <ul>
-                          {personWorkRelationships.map((personWorkRelationship) => {
-                            return (
-                              <PersonWorkRelationshipListItem personWorkRelationship={personWorkRelationship} />
-                            )
-                          })}
-                        </ul>
-                      </>
-                    }
 
-                    {areaWorkRelationships &&
-                      <>
-                        <h6>Τόποι</h6>
-                        <ul>
-                          {areaWorkRelationships.map((areaWorkRelationship) => {
-                            return (
-                              <AreaWorkRelationshipListItem areaWorkRelationship={areaWorkRelationship} />
-                            )
-                          })}
-                        </ul>
-                      </>
-                    }
-                  </Card.Body>
+                <Card className="mb-2">
+                  <Card.Header as="div">
+                    <h5 className="mb-0 float-start">Πρόσωπα</h5>
+                    <Button
+                      className="float-end"
+                      variant="primary"
+                      size="sm"
+                      style={{ padding: '0 0.4rem' }}
+                      onClick={() => setIsVisibleModalAddPersonWorkRelationship(true)}
+                    >+</Button>
+                  </Card.Header>
+                  {personWorkRelationships &&
+                    <Card.Body>
+                      <ul className="mb-0 ps-0" style={{ listStyle: 'none' }}>
+                        {personWorkRelationships.map((personWorkRelationship) => {
+                          return (
+                            <PersonWorkRelationshipListItem
+                              key={personWorkRelationship.id}
+                              personWorkRelationship={personWorkRelationship} 
+                            />
+                          )
+                        })}
+                      </ul>
+                    </Card.Body>
+                  }
                 </Card>
+
+                <Card className="mb-2">
+                  <Card.Header as="div">
+                    <h5 className="mb-0 float-start">Τόποι</h5>
+                    <Button
+                      className="float-end"
+                      variant="primary"
+                      size="sm"
+                      style={{ padding: '0 0.4rem' }}
+                      onClick={() => setIsVisibleAreaWorkRelationshipAddModal(true)}
+                    >+</Button>
+                  </Card.Header>
+                  {areaWorkRelationships &&
+                    <Card.Body>
+                      <ul className="mb-0 ps-0" style={{ listStyle: 'none' }}>
+                        {areaWorkRelationships.map((areaWorkRelationship) => {
+                          return (
+                            <AreaWorkRelationshipListItem
+                              key={areaWorkRelationship.id}
+                              areaWorkRelationship={areaWorkRelationship}
+                            />
+                          )
+                        })}
+                      </ul>
+                    </Card.Body>
+                  }
+                </Card>
+
               </Col>
             </Row>
           </article>
+
+          {isVisibleModalAddPersonWorkRelationship &&
+            <PersonWorkRelationshipAddModal
+              work={work}
+              setIsVisibleModalAddPersonWorkRelationship={setIsVisibleModalAddPersonWorkRelationship}
+              getPersonWorkRelationships={getPersonWorkRelationships}
+            />
+          }
+          {isVisibleAreaWorkRelationshipAddModal &&
+            <AreaWorkRelationshipAddModal
+              work={work}
+              setIsVisibleAreaWorkRelationshipAddModal={setIsVisibleAreaWorkRelationshipAddModal}
+              getAreaWorkRelationships={getAreaWorkRelationships}
+            />
+          }
         </>
       )}
     </div>

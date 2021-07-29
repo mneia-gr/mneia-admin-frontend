@@ -25,8 +25,8 @@ const WorkDetail = () => {
   const [workIsLoading, setWorkIsLoading] = useState(true);
   const [typeIsLoading, setTypeIsLoading] = useState(true);
   const [workTypes, setWorkTypes] = useState([]);
-  const [personWorkRelationships, setPersonWorkRelationships] = useState();
-  const [areaWorkRelationships, setAreaWorkRelationships] = useState();
+  const [personWorkRelationships, setPersonWorkRelationships] = useState([]);
+  const [areaWorkRelationships, setAreaWorkRelationships] = useState([]);
   // Modals:
   const [isVisibleModalAddPersonWorkRelationship, setIsVisibleModalAddPersonWorkRelationship] = useState(false);
   const [isVisibleAreaWorkRelationshipAddModal, setIsVisibleAreaWorkRelationshipAddModal] = useState(false);
@@ -35,9 +35,7 @@ const WorkDetail = () => {
     axios
       .get(`http://backend.mneia.gr/api/person-work-relationships/?work=${work.id}`)
       .then((response) => {
-        if (response.data.length !== 0) {
-          setPersonWorkRelationships(response.data);
-        }
+        setPersonWorkRelationships(response.data);
       })
   }
 
@@ -45,9 +43,7 @@ const WorkDetail = () => {
     axios
       .get(`http://backend.mneia.gr/api/area-work-relationships/?work=${work.id}`)
       .then((response) => {
-        if (response.data.length !== 0) {
-          setAreaWorkRelationships(response.data);
-        }
+        setAreaWorkRelationships(response.data);
       })
   }
 
@@ -158,14 +154,14 @@ const WorkDetail = () => {
                       onClick={() => setIsVisibleModalAddPersonWorkRelationship(true)}
                     >+</Button>
                   </Card.Header>
-                  {personWorkRelationships &&
+                  {(personWorkRelationships.length > 0) &&
                     <Card.Body>
                       <ul className="mb-0 ps-0" style={{ listStyle: 'none' }}>
                         {personWorkRelationships.map((personWorkRelationship) => {
                           return (
                             <PersonWorkRelationshipListItem
                               key={personWorkRelationship.id}
-                              personWorkRelationship={personWorkRelationship} 
+                              personWorkRelationship={personWorkRelationship}
                             />
                           )
                         })}
@@ -185,7 +181,7 @@ const WorkDetail = () => {
                       onClick={() => setIsVisibleAreaWorkRelationshipAddModal(true)}
                     >+</Button>
                   </Card.Header>
-                  {areaWorkRelationships &&
+                  {(areaWorkRelationships.length > 0) &&
                     <Card.Body>
                       <ul className="mb-0 ps-0" style={{ listStyle: 'none' }}>
                         {areaWorkRelationships.map((areaWorkRelationship) => {

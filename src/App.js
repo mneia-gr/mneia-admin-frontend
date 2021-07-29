@@ -16,6 +16,7 @@ import PeopleList from './components/Person/List';
 import PersonAddModal from './components/Person/AddModal';
 import WorkAddModal from './components/Work/AddModal';
 import AreaAddModal from './components/Area/AddModal';
+import AreaList from './components/Area/List';
 
 function App() {
   document.title = 'Μνεία';
@@ -94,6 +95,9 @@ function App() {
           </Route>
           <Route exact path="/people">
             <PeopleList />
+          </Route>
+          <Route exact path="/areas">
+            <AreaList />
           </Route>
         </Switch>
       </Container>

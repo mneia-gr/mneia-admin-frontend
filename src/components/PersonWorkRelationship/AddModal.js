@@ -2,10 +2,11 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Col from "react-bootstrap/Col";
+import Collapse from 'react-bootstrap/Collapse';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Row from "react-bootstrap/Row";
-
+import { Typeahead } from 'react-bootstrap-typeahead';
 
 const PersonWorkRelationshipAddModal = ({
   work,
@@ -16,9 +17,13 @@ const PersonWorkRelationshipAddModal = ({
   const [people, setPeople] = useState([]);
   const [types, setTypes] = useState([]);
   // `person`, `type` and `note` are the values selected in the form:
-  const [person, setPerson] = useState();
+  const [person, setPerson] = useState([]);
   const [type, setType] = useState();
   const [note, setNote] = useState();
+  // controls when adding a person, while adding a relationship:
+  const [addPersonCollapseOpen, setAddPersonCollapseOpen] = useState(false);
+  const [personTypeAheadDisabled, setPersonTypeAheadDisabled] = useState(false);
+  const [newPersonName, setNewPersonName] = useState('');
 
   useEffect(
     () => {
@@ -46,7 +51,7 @@ const PersonWorkRelationshipAddModal = ({
     e.preventDefault();
     const personWorkRelationship = {
       work: work.id,
-      person,
+      person: person[0].id,
       type,
       note,
     }
@@ -55,6 +60,18 @@ const PersonWorkRelationshipAddModal = ({
       .then(() => {
         setIsVisibleModalAddPersonWorkRelationship(false);
         getPersonWorkRelationships(work);
+      })
+  }
+
+  const handleAddNewPerson = (e) => {
+    e.preventDefault();
+    const person = { name: newPersonName };
+    axios
+      .post('http://backend.mneia.gr/api/people/', person)
+      .then((response) => {
+        setAddPersonCollapseOpen(false);
+        setPersonTypeAheadDisabled(false);
+        setPerson([response.data]);
       })
   }
 
@@ -74,21 +91,59 @@ const PersonWorkRelationshipAddModal = ({
             </Col>
           </Form.Group>
 
-          {/* TODO Replace this with https://www.npmjs.com/package/react-bootstrap-typeahead */}
           <Form.Group as={Row} className="mb-3" controlId="formHorizontalPerson">
             <Form.Label column sm={2}>
               Person
             </Form.Label>
-            <Col sm={10}>
-              <Form.Select aria-label="Select Person" onChange={(e) => setPerson(e.target.value)}>
-                {people.map((person) => {
-                  return (
-                    <option key={person.id} value={person.id}>{person.name}</option>
-                  )
-                })}
-              </Form.Select>
+            <Col sm={8} className="pe-0">
+              <Typeahead
+                id="typeahead-person"
+                labelKey="name"
+                options={people}
+                placeholder="Person"
+                selected={person}
+                onChange={(selected) => {
+                  setPerson(selected);
+                }}
+                highlightOnlyResult
+                disabled={personTypeAheadDisabled}
+              />
+            </Col>
+            <Col sm={2}>
+              <Button
+                className="float-end"
+                variant="primary"
+                onClick={() => {
+                  setPersonTypeAheadDisabled(!personTypeAheadDisabled);
+                  setAddPersonCollapseOpen(!addPersonCollapseOpen);
+                }}
+                aria-controls="add-person-collapse-open"
+                aria-expanded={addPersonCollapseOpen}
+              >New</Button>
             </Col>
           </Form.Group>
+
+          <Collapse in={addPersonCollapseOpen}>
+            <Row>
+              <Col sm={{ span: 8, offset: 2 }} className="pe-0">
+                <Form.Control
+                  className="mb-3"
+                  type="text"
+                  placeholder="New Person Name"
+                  value={newPersonName}
+                  onChange={(e) => setNewPersonName(e.target.value)}
+                />
+              </Col>
+              <Col sm={2}>
+                <Button
+                  className="float-end"
+                  variant="primary"
+                  style={{ width: '100%' }}
+                  onClick={handleAddNewPerson}
+                >Add</Button>
+              </Col>
+            </Row>
+          </Collapse>
 
           <fieldset>
             <Form.Group as={Row} className="mb-3">

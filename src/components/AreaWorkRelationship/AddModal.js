@@ -5,7 +5,7 @@ import Col from "react-bootstrap/Col";
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Row from "react-bootstrap/Row";
-
+import { Typeahead } from 'react-bootstrap-typeahead';
 
 const AreaWorkRelationshipAddModal = ({
   work,
@@ -16,7 +16,7 @@ const AreaWorkRelationshipAddModal = ({
   const [areas, setAreas] = useState([]);
   const [types, setTypes] = useState([]);
   // `area`, `type` and `note` are the values selected in the form:
-  const [area, setArea] = useState();
+  const [area, setArea] = useState([]);
   const [type, setType] = useState();
   const [note, setNote] = useState();
 
@@ -46,7 +46,7 @@ const AreaWorkRelationshipAddModal = ({
     e.preventDefault();
     const areaWorkRelationship = {
       work: work.id,
-      area,
+      area: area[0].id,
       type,
       note,
     }
@@ -74,19 +74,22 @@ const AreaWorkRelationshipAddModal = ({
             </Col>
           </Form.Group>
 
-          {/* TODO Replace this with https://www.npmjs.com/package/react-bootstrap-typeahead */}
           <Form.Group as={Row} className="mb-3" controlId="formHorizontalArea">
             <Form.Label column sm={2}>
               Area
             </Form.Label>
             <Col sm={10}>
-              <Form.Select aria-label="Select Area" onChange={(e) => setArea(e.target.value)}>
-                {areas.map((area) => {
-                  return (
-                    <option key={area.id} value={area.id}>{area.name}</option>
-                  )
-                })}
-              </Form.Select>
+              <Typeahead
+                id="typeahead-area"
+                labelKey="name"
+                options={areas}
+                placeholder="Area"
+                selected={area}
+                onChange={(selected) => {
+                  setArea(selected);
+                }}
+                highlightOnlyResult
+              />
             </Col>
           </Form.Group>
 

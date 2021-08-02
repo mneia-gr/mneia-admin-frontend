@@ -8,7 +8,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
 
-const PersonAddModal = ({ setIsVisibleModalAddPerson }) => {
+const PersonAddModal = ({ setIsVisibleModalAddPerson, addToast }) => {
   const [name, setName] = useState('');
 
   const handleSubmit = (e) => {
@@ -18,6 +18,7 @@ const PersonAddModal = ({ setIsVisibleModalAddPerson }) => {
       .post('http://backend.mneia.gr/api/people/', person)
       .then(() => {
         setIsVisibleModalAddPerson(false);
+        addToast(`Added person ${name}`);
       })
   };
 

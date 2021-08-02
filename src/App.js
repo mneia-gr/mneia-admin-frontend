@@ -5,6 +5,8 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import Toast from 'react-bootstrap/Toast';
+import ToastContainer from 'react-bootstrap/ToastContainer';
 // React Router:
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 // React Router Bootstrap:
@@ -21,9 +23,24 @@ import AreaList from './components/Area/List';
 function App() {
   document.title = 'Μνεία';
 
+  // Toasts:
+  const [toasts, setToasts] = useState([]);
+  // Modals:
   const [isVisibleModalAddPerson, setIsVisibleModalAddPerson] = useState(false);
   const [isVisibleModalAddWork, setIsVisibleModalAddWork] = useState(false);
   const [isVisibleModalAddArea, setIsVisibleModalAddArea] = useState(false);
+
+  const popToast = (index) => {
+    const newToasts = [...toasts];
+    newToasts.splice(index, 1);
+    setToasts(newToasts);
+  }
+
+  const addToast = (toast) => {
+    const newToasts = [...toasts];
+    newToasts.push(toast);
+    setToasts(newToasts);
+  };
 
   return (
     <Router>
@@ -91,7 +108,7 @@ function App() {
             <WorkList />
           </Route>
           <Route path="/works/:id">
-            <WorkDetail />
+            <WorkDetail addToast={addToast} />
           </Route>
           <Route exact path="/people">
             <PeopleList />
@@ -102,9 +119,27 @@ function App() {
         </Switch>
       </Container>
 
-      {isVisibleModalAddPerson && <PersonAddModal setIsVisibleModalAddPerson={setIsVisibleModalAddPerson} />}
-      {isVisibleModalAddWork && <WorkAddModal setIsVisibleModalAddWork={setIsVisibleModalAddWork} />}
-      {isVisibleModalAddArea && <AreaAddModal setIsVisibleModalAddArea={setIsVisibleModalAddArea} />}
+      <ToastContainer className="p-3" position="bottom-end">
+        {toasts.map((toast, index) => {
+          return (
+            <Toast key={index} bg='success' onClose={() => popToast(index)}>
+              <Toast.Header>
+                <span className="me-auto">{ toast }</span>
+              </Toast.Header>
+            </Toast>
+          )
+        })}
+      </ToastContainer>
+
+      {isVisibleModalAddPerson &&
+        <PersonAddModal setIsVisibleModalAddPerson={setIsVisibleModalAddPerson} addToast={addToast} />
+      }
+      {isVisibleModalAddWork &&
+        <WorkAddModal setIsVisibleModalAddWork={setIsVisibleModalAddWork} addToast={addToast} />
+      }
+      {isVisibleModalAddArea &&
+        <AreaAddModal setIsVisibleModalAddArea={setIsVisibleModalAddArea} addToast={addToast} />
+      }
     </Router>
   )
 }

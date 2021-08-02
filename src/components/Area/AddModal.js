@@ -8,7 +8,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
 
-const AreaAddModal = ({ setIsVisibleModalAddArea }) => {
+const AreaAddModal = ({ setIsVisibleModalAddArea, addToast }) => {
   const [name, setName] = useState('');
 
   const handleSubmit = (e) => {
@@ -18,6 +18,7 @@ const AreaAddModal = ({ setIsVisibleModalAddArea }) => {
       .post('http://backend.mneia.gr/api/areas/', area)
       .then(() => {
         setIsVisibleModalAddArea(false);
+        addToast(`Added area ${name}`);
       })
   };
 

@@ -12,7 +12,7 @@ import Row from 'react-bootstrap/Row';
 // React Router:
 import { useHistory } from "react-router-dom";
 
-const WorkAddModal = ({ setIsVisibleModalAddWork }) => {
+const WorkAddModal = ({ setIsVisibleModalAddWork, addToast }) => {
   const [name, setName] = useState('');
   const [types, setTypes] = useState([]);
   const [type, setType] = useState();
@@ -36,6 +36,7 @@ const WorkAddModal = ({ setIsVisibleModalAddWork }) => {
       .post('http://backend.mneia.gr/api/works/', work)
       .then((response) => {
         setIsVisibleModalAddWork(false);
+        addToast(`Added work ${name}`);
         history.push(`/works/${ response.data.id }`)
       })
   };

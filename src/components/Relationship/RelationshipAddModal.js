@@ -22,7 +22,8 @@ import axios from 'axios';
  * @param {object} toInstance
  * @param {string} toModel - the name of the second model in the relationship
  * @param {function} setIsVisibleRelationshipAddModal - sets the visibility of the modal
- * @param {function} refresher - if provided it will be executed after the relationship has been created
+ * @param {function} refresher - if provided, it will be executed after the relationship has been created
+ * @param {function} setAlertMessage - if provided, it can be use to display an alert in case of errors
  * @returns
  */
 const RelationshipAddModal = ({
@@ -32,6 +33,8 @@ const RelationshipAddModal = ({
   toModel,
   setIsVisibleRelationshipAddModal,
   refresher,
+  setAlertMessage,
+  addToast,
 }) => {
   const [startInstance, setStartInstance] = useState();
   const [startModel, setStartModel] = useState();
@@ -53,17 +56,16 @@ const RelationshipAddModal = ({
     }
   }
 
-  const getEndInstances = (endModel) => {
-    const modelNamePlural = getModelNamePlural(endModel);
-    axios
-      .get(`http://backend.mneia.gr/api/${modelNamePlural}/`)
-      .then((response) => {
-        setEndInstances(response.data);
-      })
-  }
-
   useEffect(
     () => {
+      const getEndInstances = (endModel) => {
+        const modelNamePlural = getModelNamePlural(endModel);
+        axios
+          .get(`http://backend.mneia.gr/api/${modelNamePlural}/`)
+          .then((response) => {
+            setEndInstances(response.data);
+          })
+      }
       if (fromInstance) {
         setStartInstance(fromInstance);
         setStartModel(fromModel);
@@ -76,7 +78,7 @@ const RelationshipAddModal = ({
         getEndInstances(fromModel);
       };
     },
-    []
+    [fromInstance, toInstance, fromModel, toModel]
   )
 
   useEffect(
@@ -87,37 +89,47 @@ const RelationshipAddModal = ({
           setTypes(response.data);
         })
     },
-    []
+    [fromModel, toModel]
   )
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const relationship = { type, note };
-    relationship[startModel.toLowerCase()] = startInstance.id;
-    relationship[endModel.toLowerCase()] = endInstance[0].id;
+    const data = { type, note };
+    data[startModel.toLowerCase()] = startInstance.id;
+    data[endModel.toLowerCase()] = endInstance[0].id;
     const url = `http://backend.mneia.gr/api/${startModel.toLowerCase()}-${endModel.toLowerCase()}-relationships/`
 
     axios
-      .post(url, relationship)
+      .post(url, data)
       .then(() => {
         setIsVisibleRelationshipAddModal(false);
         if (refresher) {
           refresher(startInstance);
         }
+        addToast(`Added relationship between ${startModel} "${startInstance.name}" and ${endModel} "${endInstance[0].name}"`)
+      })
+      .catch((err) => {
+        setIsVisibleRelationshipAddModal(false);
+        setAlertMessage(`POST to ${url} with data ${JSON.stringify(data)} failed: ${err.message}`);
       })
   }
 
   const handleAddNewEndInstance = (e) => {
     e.preventDefault();
-    const instance = { name: newEndInstanceName };
+    const data = { name: newEndInstanceName };
     const modelNamePlural = getModelNamePlural(endModel);
     const url = `http://backend.mneia.gr/api/${modelNamePlural}/`
     axios
-      .post(url, instance)
+      .post(url, data)
       .then((response) => {
         setAddEndInstanceCollapseOpen(false);
         setTypeAheadDisabled(false);
         setEndInstance([response.data]);
+        addToast(`Added ${endModel} ${newEndInstanceName}`)
+      })
+      .catch((err) => {
+        setIsVisibleRelationshipAddModal(false);
+        setAlertMessage(`POST to ${url} with data ${JSON.stringify(data)} failed: ${err.message}`);
       })
   }
 

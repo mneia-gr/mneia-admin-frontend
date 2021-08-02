@@ -15,8 +15,7 @@ import rehypeRaw from "rehype-raw";
 import axios from "axios";
 import PersonWorkRelationshipListItem from "../PersonWorkRelationship/ListItem";
 import AreaWorkRelationshipListItem from "../AreaWorkRelationship/ListItem";
-import PersonWorkRelationshipAddModal from "../PersonWorkRelationship/AddModal";
-import AreaWorkRelationshipAddModal from '../AreaWorkRelationship/AddModal';
+import RelationshipAddModal from "../Relationship/RelationshipAddModal";
 
 const WorkDetail = () => {
   const { id } = useParams();
@@ -28,7 +27,7 @@ const WorkDetail = () => {
   const [personWorkRelationships, setPersonWorkRelationships] = useState([]);
   const [areaWorkRelationships, setAreaWorkRelationships] = useState([]);
   // Modals:
-  const [isVisibleModalAddPersonWorkRelationship, setIsVisibleModalAddPersonWorkRelationship] = useState(false);
+  const [isVisiblePersonWorkRelationshipAddModal, setIsVisiblePersonWorkRelationshipAddModal] = useState(false);
   const [isVisibleAreaWorkRelationshipAddModal, setIsVisibleAreaWorkRelationshipAddModal] = useState(false);
 
   const getPersonWorkRelationships = (work) => {
@@ -151,7 +150,7 @@ const WorkDetail = () => {
                       variant="primary"
                       size="sm"
                       style={{ padding: '0 0.4rem' }}
-                      onClick={() => setIsVisibleModalAddPersonWorkRelationship(true)}
+                      onClick={() => setIsVisiblePersonWorkRelationshipAddModal(true)}
                     >+</Button>
                   </Card.Header>
                   {(personWorkRelationships.length > 0) &&
@@ -201,18 +200,22 @@ const WorkDetail = () => {
             </Row>
           </article>
 
-          {isVisibleModalAddPersonWorkRelationship &&
-            <PersonWorkRelationshipAddModal
-              work={work}
-              setIsVisibleModalAddPersonWorkRelationship={setIsVisibleModalAddPersonWorkRelationship}
-              getPersonWorkRelationships={getPersonWorkRelationships}
+          {isVisiblePersonWorkRelationshipAddModal &&
+            <RelationshipAddModal
+              fromModel="Person"
+              toInstance={work}
+              toModel="Work"
+              setIsVisibleRelationshipAddModal={setIsVisiblePersonWorkRelationshipAddModal}
+              refresher={getPersonWorkRelationships}
             />
           }
           {isVisibleAreaWorkRelationshipAddModal &&
-            <AreaWorkRelationshipAddModal
-              work={work}
-              setIsVisibleAreaWorkRelationshipAddModal={setIsVisibleAreaWorkRelationshipAddModal}
-              getAreaWorkRelationships={getAreaWorkRelationships}
+            <RelationshipAddModal
+              fromModel="Area"
+              toInstance={work}
+              toModel="Work"
+              setIsVisibleRelationshipAddModal={setIsVisibleAreaWorkRelationshipAddModal}
+              refresher={getAreaWorkRelationships}
             />
           }
         </>

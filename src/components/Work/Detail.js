@@ -16,7 +16,7 @@ import rehypeRaw from "rehype-raw";
 import axios from "axios";
 import PersonWorkRelationshipListItem from "../PersonWorkRelationship/ListItem";
 import AreaWorkRelationshipListItem from "../AreaWorkRelationship/ListItem";
-import RelationshipAddModal from "../Relationship/RelationshipAddModal";
+import RelationshipAddModal from "../Generic/RelationshipAddModal";
 
 const WorkDetail = ({ addToast }) => {
   const { id } = useParams();

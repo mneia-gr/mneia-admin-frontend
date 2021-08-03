@@ -15,10 +15,8 @@ import { LinkContainer } from 'react-router-bootstrap';
 import WorkList from './components/Work/List';
 import WorkDetail from './components/Work/Detail';
 import PeopleList from './components/Person/List';
-import PersonAddModal from './components/Person/AddModal';
-import WorkAddModal from './components/Work/AddModal';
-import AreaAddModal from './components/Area/AddModal';
 import AreaList from './components/Area/List';
+import InstanceAddModal from './components/Generic/InstanceAddModal';
 
 function App() {
   document.title = 'Μνεία';
@@ -124,7 +122,7 @@ function App() {
           return (
             <Toast key={index} bg='success' onClose={() => popToast(index)}>
               <Toast.Header>
-                <span className="me-auto">{ toast }</span>
+                <span className="me-auto">{toast}</span>
               </Toast.Header>
             </Toast>
           )
@@ -132,13 +130,27 @@ function App() {
       </ToastContainer>
 
       {isVisibleModalAddPerson &&
-        <PersonAddModal setIsVisibleModalAddPerson={setIsVisibleModalAddPerson} addToast={addToast} />
+        <InstanceAddModal
+          model="Person"
+          setIsVisibleModalAddInstance={setIsVisibleModalAddPerson}
+          addToast={addToast}
+        />
       }
       {isVisibleModalAddWork &&
-        <WorkAddModal setIsVisibleModalAddWork={setIsVisibleModalAddWork} addToast={addToast} />
+        <InstanceAddModal
+          model="Work"
+          setIsVisibleModalAddInstance={setIsVisibleModalAddWork}
+          addToast={addToast}
+          hasTypes
+          redirect
+        />
       }
       {isVisibleModalAddArea &&
-        <AreaAddModal setIsVisibleModalAddArea={setIsVisibleModalAddArea} addToast={addToast} />
+        <InstanceAddModal
+          model="Area"
+          setIsVisibleModalAddInstance={setIsVisibleModalAddArea}
+          addToast={addToast}
+        />
       }
     </Router>
   )

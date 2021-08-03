@@ -7,6 +7,7 @@ import Row from "react-bootstrap/Row";
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { getModelNamePlural } from '../../utils';
 
 /**
  * Renders a modal with a form that adds a relationship between two models. Either `fromInstance` or `toInstance` must
@@ -24,7 +25,7 @@ import axios from 'axios';
  * @param {function} setIsVisibleRelationshipAddModal - sets the visibility of the modal
  * @param {function} refresher - if provided, it will be executed after the relationship has been created
  * @param {function} setAlertMessage - if provided, it can be use to display an alert in case of errors
- * @returns
+ * @returns a Modal
  */
 const RelationshipAddModal = ({
   fromInstance,
@@ -47,14 +48,6 @@ const RelationshipAddModal = ({
   const [typeAheadDisabled, setTypeAheadDisabled] = useState(false);
   const [addEndInstanceCollapseOpen, setAddEndInstanceCollapseOpen] = useState(false);
   const [newEndInstanceName, setNewEndInstanceName] = useState('');
-
-  const getModelNamePlural = (modelName) => {
-    if (modelName.toLowerCase() === "person") {
-      return "people";
-    } else {
-      return `${modelName.toLowerCase()}s`;
-    }
-  }
 
   useEffect(
     () => {
@@ -106,7 +99,8 @@ const RelationshipAddModal = ({
         if (refresher) {
           refresher(startInstance);
         }
-        addToast(`Added relationship between ${startModel} "${startInstance.name}" and ${endModel} "${endInstance[0].name}"`)
+        addToast(
+          `Added relationship between ${startModel} "${startInstance.name}" and ${endModel} "${endInstance[0].name}"`)
       })
       .catch((err) => {
         setIsVisibleRelationshipAddModal(false);

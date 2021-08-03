@@ -16,7 +16,9 @@ import { LinkContainer } from 'react-router-bootstrap';
 import WorkList from './components/Work/List';
 import WorkDetail from './components/Work/Detail';
 import PeopleList from './components/Person/List';
+import PersonDetail from './components/Person/Detail';
 import AreaList from './components/Area/List';
+import AreaDetail from './components/Area/Detail';
 import InstanceAddModal from './components/Generic/InstanceAddModal';
 
 function App() {
@@ -123,8 +125,14 @@ function App() {
           <Route exact path="/people">
             <PeopleList />
           </Route>
+          <Route path="/people/:id">
+            <PersonDetail setAlert={setAlert} addToast={addToast} />
+          </Route>
           <Route exact path="/areas">
             <AreaList />
+          </Route>
+          <Route path="/areas/:id">
+            <AreaDetail setAlert={setAlert} addToast={addToast} />
           </Route>
         </Switch>
       </Container>

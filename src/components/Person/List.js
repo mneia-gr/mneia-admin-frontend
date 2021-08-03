@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import useFetch from "../../useFetch"
+import Spinner from 'react-bootstrap/Spinner'
 
 const PeopleList = () => {
   const { data: people, isPending, error } = useFetch('http://backend.mneia.gr/api/people/');
@@ -9,7 +10,11 @@ const PeopleList = () => {
   return (
     <>
       <h2>People</h2>
-      {isPending && <div>Loading...</div>}
+      {isPending &&
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      }
       {error && <div>{error}</div>}
       {people && (
         <ul>

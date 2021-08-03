@@ -51,7 +51,7 @@ const InstanceAddModal = ({ model, setIsVisibleModalAddInstance, addToast, hasTy
     }
     const modelNamePlural = getModelNamePlural(model);
     axios
-      .post(`http://backend.mneia.gr/apis/${modelNamePlural}/`, instance)
+      .post(`http://backend.mneia.gr/api/${modelNamePlural}/`, instance)
       .then((response) => {
         setIsVisibleModalAddInstance(false);
         addToast(`Added ${model} "${name}"`);

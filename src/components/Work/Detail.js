@@ -8,14 +8,16 @@ import Card from 'react-bootstrap/Card';
 import Col from "react-bootstrap/Col";
 import Dropdown from 'react-bootstrap/Dropdown';
 import Row from "react-bootstrap/Row";
+import Spinner from 'react-bootstrap/Spinner'
 // React Markdown
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 // etc
 import axios from "axios";
-import PersonWorkRelationshipListItem from "../PersonWorkRelationship/ListItem";
-import AreaWorkRelationshipListItem from "../AreaWorkRelationship/ListItem";
+import PersonWorkRelationshipItem from "../PersonWorkRelationship/Item";
+import AreaWorkRelationshipItem from "../AreaWorkRelationship/Item";
 import RelationshipAddModal from "../Generic/RelationshipAddModal";
+import URLCard from "../URL/Card";
 
 const WorkDetail = ({ addToast, setAlert }) => {
   const { id } = useParams();
@@ -109,7 +111,11 @@ const WorkDetail = ({ addToast, setAlert }) => {
 
   return (
     <div>
-      {workIsLoading && <div>Loading...</div>}
+      {workIsLoading &&
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      }
       {work && (
         <>
           <article className="work">
@@ -160,9 +166,11 @@ const WorkDetail = ({ addToast, setAlert }) => {
                       <ul className="mb-0 ps-0" style={{ listStyle: 'none' }}>
                         {personWorkRelationships.map((personWorkRelationship) => {
                           return (
-                            <PersonWorkRelationshipListItem
+                            <PersonWorkRelationshipItem
                               key={personWorkRelationship.id}
                               personWorkRelationship={personWorkRelationship}
+                              scope="person"
+                              as="li"
                             />
                           )
                         })}
@@ -187,9 +195,11 @@ const WorkDetail = ({ addToast, setAlert }) => {
                       <ul className="mb-0 ps-0" style={{ listStyle: 'none' }}>
                         {areaWorkRelationships.map((areaWorkRelationship) => {
                           return (
-                            <AreaWorkRelationshipListItem
+                            <AreaWorkRelationshipItem
                               key={areaWorkRelationship.id}
                               areaWorkRelationship={areaWorkRelationship}
+                              scope="area"
+                              as="li"
                             />
                           )
                         })}
@@ -197,6 +207,10 @@ const WorkDetail = ({ addToast, setAlert }) => {
                     </Card.Body>
                   }
                 </Card>
+
+                {work &&
+                  <URLCard model="Work" instance={work} setAlert={setAlert} addToast={addToast} />
+                }
               </Col>
             </Row>
           </article>

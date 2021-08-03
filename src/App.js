@@ -1,6 +1,7 @@
 // React:
 import { useState } from 'react';
 // React Bootstrap:
+import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
@@ -21,6 +22,8 @@ import InstanceAddModal from './components/Generic/InstanceAddModal';
 function App() {
   document.title = 'Μνεία';
 
+  // Alert:
+  const [alert, setAlert] = useState('');
   // Toasts:
   const [toasts, setToasts] = useState([]);
   // Modals:
@@ -100,13 +103,22 @@ function App() {
         </Container>
       </Navbar>
 
+      {alert &&
+        <Container>
+          <Alert variant="danger" onClose={() => setAlert('')} dismissible>
+            <Alert.Heading>Error</Alert.Heading>
+            {alert}
+          </Alert>
+        </Container>
+      }
+
       <Container>
         <Switch>
           <Route exact path="/works">
             <WorkList />
           </Route>
           <Route path="/works/:id">
-            <WorkDetail addToast={addToast} />
+            <WorkDetail addToast={addToast} setAlert={setAlert} />
           </Route>
           <Route exact path="/people">
             <PeopleList />
@@ -134,6 +146,7 @@ function App() {
           model="Person"
           setIsVisibleModalAddInstance={setIsVisibleModalAddPerson}
           addToast={addToast}
+          setAlert={setAlert}
         />
       }
       {isVisibleModalAddWork &&
@@ -143,6 +156,7 @@ function App() {
           addToast={addToast}
           hasTypes
           redirect
+          setAlert={setAlert}
         />
       }
       {isVisibleModalAddArea &&
@@ -150,6 +164,7 @@ function App() {
           model="Area"
           setIsVisibleModalAddInstance={setIsVisibleModalAddArea}
           addToast={addToast}
+          setAlert={setAlert}
         />
       }
     </Router>

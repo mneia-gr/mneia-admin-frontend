@@ -24,7 +24,7 @@ import { getModelNamePlural } from '../../utils';
  * @param {string} toModel - the name of the second model in the relationship
  * @param {function} setIsVisibleRelationshipAddModal - sets the visibility of the modal
  * @param {function} refresher - if provided, it will be executed after the relationship has been created
- * @param {function} setAlertMessage - if provided, it can be use to display an alert in case of errors
+ * @param {function} setAlert - if provided, it can be use to display an alert in case of errors
  * @returns a Modal
  */
 const RelationshipAddModal = ({
@@ -34,7 +34,7 @@ const RelationshipAddModal = ({
   toModel,
   setIsVisibleRelationshipAddModal,
   refresher,
-  setAlertMessage,
+  setAlert,
   addToast,
 }) => {
   const [startInstance, setStartInstance] = useState();
@@ -104,7 +104,7 @@ const RelationshipAddModal = ({
       })
       .catch((err) => {
         setIsVisibleRelationshipAddModal(false);
-        setAlertMessage(`POST to ${url} with data ${JSON.stringify(data)} failed: ${err.message}`);
+        setAlert(`POST to ${url} with data ${JSON.stringify(data)} failed: ${err.message}`);
       })
   }
 
@@ -123,7 +123,7 @@ const RelationshipAddModal = ({
       })
       .catch((err) => {
         setIsVisibleRelationshipAddModal(false);
-        setAlertMessage(`POST to ${url} with data ${JSON.stringify(data)} failed: ${err.message}`);
+        setAlert(`POST to ${url} with data ${JSON.stringify(data)} failed: ${err.message}`);
       })
   }
 

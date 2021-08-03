@@ -20,9 +20,10 @@ import { getModelNamePlural } from "../../utils";
  * @param {function} addToast - used to show a notification after a successful operation
  * @param {boolean} hasTypes - if provided, the form will include radio buttons for model types
  * @param {boolean} redirect - if provided, the browser will redirect to a page specific to the newly added instance
+ * @param {function} setAlert - use to show an application-wide alert in case of error
  * @returns a Modal
  */
-const InstanceAddModal = ({ model, setIsVisibleModalAddInstance, addToast, hasTypes, redirect }) => {
+const InstanceAddModal = ({ model, setIsVisibleModalAddInstance, addToast, hasTypes, redirect, setAlert }) => {
   const [name, setName] = useState('');
   const [types, setTypes] = useState([]);
   const [type, setType] = useState();
@@ -50,13 +51,17 @@ const InstanceAddModal = ({ model, setIsVisibleModalAddInstance, addToast, hasTy
     }
     const modelNamePlural = getModelNamePlural(model);
     axios
-      .post(`http://backend.mneia.gr/api/${modelNamePlural}/`, instance)
+      .post(`http://backend.mneia.gr/apis/${modelNamePlural}/`, instance)
       .then((response) => {
         setIsVisibleModalAddInstance(false);
         addToast(`Added ${model} "${name}"`);
         if (redirect) {
           history.push(`/${modelNamePlural}/${response.data.id}`)
         }
+      })
+      .catch((err) => {
+        setIsVisibleModalAddInstance(false);
+        setAlert(`POST failed with error: ${err.message}`);
       })
   };
 

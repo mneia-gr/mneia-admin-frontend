@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 // React Router
 import { useParams } from "react-router-dom";
 // React Bootstrap
-import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Col from "react-bootstrap/Col";
@@ -18,7 +17,7 @@ import PersonWorkRelationshipListItem from "../PersonWorkRelationship/ListItem";
 import AreaWorkRelationshipListItem from "../AreaWorkRelationship/ListItem";
 import RelationshipAddModal from "../Generic/RelationshipAddModal";
 
-const WorkDetail = ({ addToast }) => {
+const WorkDetail = ({ addToast, setAlert }) => {
   const { id } = useParams();
   const [work, setWork] = useState({});
   const [type, setType] = useState();
@@ -27,8 +26,6 @@ const WorkDetail = ({ addToast }) => {
   const [workTypes, setWorkTypes] = useState([]);
   const [personWorkRelationships, setPersonWorkRelationships] = useState([]);
   const [areaWorkRelationships, setAreaWorkRelationships] = useState([]);
-  // Alert:
-  const [alertMessage, setAlertMessage] = useState('');
 
   // Visibility Controls::
   const [isVisiblePersonWorkRelationshipAddModal, setIsVisiblePersonWorkRelationshipAddModal] = useState(false);
@@ -115,12 +112,6 @@ const WorkDetail = ({ addToast }) => {
       {workIsLoading && <div>Loading...</div>}
       {work && (
         <>
-          {alertMessage &&
-            <Alert variant="danger" onClose={() => setAlertMessage('')} dismissible>
-              <Alert.Heading>Error</Alert.Heading>
-              <p>{alertMessage}</p>
-            </Alert>
-          }
           <article className="work">
             <h1>{work.name}</h1>
             <Row>
@@ -217,7 +208,7 @@ const WorkDetail = ({ addToast }) => {
               toModel="Work"
               setIsVisibleRelationshipAddModal={setIsVisiblePersonWorkRelationshipAddModal}
               refresher={getPersonWorkRelationships}
-              setAlertMessage={setAlertMessage}
+              setAlert={setAlert}
               addToast={addToast}
             />
           }
@@ -228,7 +219,7 @@ const WorkDetail = ({ addToast }) => {
               toModel="Work"
               setIsVisibleRelationshipAddModal={setIsVisibleAreaWorkRelationshipAddModal}
               refresher={getAreaWorkRelationships}
-              setAlertMessage={setAlertMessage}
+              setAlert={setAlert}
               addToast={addToast}
             />
           }

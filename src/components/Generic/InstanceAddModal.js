@@ -26,6 +26,7 @@ const InstanceAddModal = ({ model, setIsVisibleModalAddInstance, addToast, hasTy
   const [name, setName] = useState('');
   const [types, setTypes] = useState([]);
   const [type, setType] = useState();
+  const [similarInstances, setSimilarInstances] = useState([]);
   const history = useHistory();
 
   useEffect(
@@ -52,12 +53,26 @@ const InstanceAddModal = ({ model, setIsVisibleModalAddInstance, addToast, hasTy
       .post(`http://backend.mneia.gr/api/${modelNamePlural}/`, instance)
       .then((response) => {
         setIsVisibleModalAddInstance(false);
-        addToast(`Added ${model} ${name}`);
+        addToast(`Added ${model} "${name}"`);
         if (redirect) {
           history.push(`/${modelNamePlural}/${response.data.id}`)
         }
       })
   };
+
+  const handleNameChange = (name) => {
+    setName(name);
+    if (name.length > 0) {
+      const modelNamePlural = getModelNamePlural(model);
+      axios
+        .get(`http://backend.mneia.gr/api/${modelNamePlural}/?name=${name}&limit=5`)
+        .then((response) => {
+          setSimilarInstances(response.data);
+        })
+    } else {
+      setSimilarInstances([]);
+    }
+  }
 
   return (
     <Modal show={true} onHide={() => setIsVisibleModalAddInstance(false)}>
@@ -77,12 +92,29 @@ const InstanceAddModal = ({ model, setIsVisibleModalAddInstance, addToast, hasTy
                 placeholder="Name"
                 id="name"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => handleNameChange(e.target.value)}
               ></Form.Control>
             </Col>
           </Form.Group>
 
-          {types.length &&
+          {(similarInstances.length > 0) &&
+            <Row>
+              <Col sm={2}>
+                Similar
+              </Col>
+              <Col sm={10}>
+                <ul>
+                  {similarInstances.map((similarInstance) => {
+                    return (
+                      <li key={similarInstance.id}>{similarInstance.name}</li>
+                    )
+                  })}
+                </ul>
+              </Col>
+            </Row>
+          }
+
+          {(types.length > 0) &&
             <fieldset>
               <Form.Group as={Row} className="mb-3">
                 <Form.Label as="legend" column sm={2}>

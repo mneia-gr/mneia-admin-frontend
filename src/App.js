@@ -140,7 +140,7 @@ function App() {
       <ToastContainer className="p-3" position="bottom-end">
         {toasts.map((toast, index) => {
           return (
-            <Toast key={index} bg='success' onClose={() => popToast(index)}>
+            <Toast key={index} bg='success' onClose={() => popToast(index)} autohide delay={30000} >
               <Toast.Header>
                 <span className="me-auto">{toast}</span>
               </Toast.Header>

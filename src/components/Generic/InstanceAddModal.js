@@ -29,6 +29,9 @@ const InstanceAddModal = ({ model, setIsVisibleModalAddInstance, addToast, hasTy
   const [type, setType] = useState();
   const [similarInstances, setSimilarInstances] = useState([]);
   const history = useHistory();
+  const [mbid, setMbid] = useState('');
+  const [isDisabledName, setIsDisabledName] = useState(false);
+  const [isDisabledMbid, setIsDisabledMbid] = useState(false);
 
   useEffect(
     () => {
@@ -45,16 +48,24 @@ const InstanceAddModal = ({ model, setIsVisibleModalAddInstance, addToast, hasTy
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const instance = { name };
-    if (hasTypes) {
-      instance['type'] = type;
+    const data = {};
+
+    if (mbid.length > 0) {
+      data.mbid = mbid;
+    } else {
+      data.name = name;
     }
+
+    if (hasTypes) {
+      data.type = type;
+    }
+
     const modelNamePlural = getModelNamePlural(model);
     axios
-      .post(`http://backend.mneia.gr/api/${modelNamePlural}/`, instance)
+      .post(`http://backend.mneia.gr/api/${modelNamePlural}/`, data)
       .then((response) => {
         setIsVisibleModalAddInstance(false);
-        addToast(`Added ${model} "${name}"`);
+        addToast(`Added ${model} "${response.data.name}"`);
         if (redirect) {
           history.push(`/${modelNamePlural}/${response.data.id}`)
         }
@@ -67,6 +78,8 @@ const InstanceAddModal = ({ model, setIsVisibleModalAddInstance, addToast, hasTy
 
   const handleNameChange = (name) => {
     setName(name);
+    setIsDisabledMbid(name.length > 0);
+    console.log(`name: "${name}" length: ${name.length}`)
     if (name.length > 0) {
       const modelNamePlural = getModelNamePlural(model);
       axios
@@ -77,6 +90,11 @@ const InstanceAddModal = ({ model, setIsVisibleModalAddInstance, addToast, hasTy
     } else {
       setSimilarInstances([]);
     }
+  }
+
+  const handleMbidChange = (mbid) => {
+    setMbid(mbid);
+    setIsDisabledName(mbid.length > 0);
   }
 
   return (
@@ -93,11 +111,12 @@ const InstanceAddModal = ({ model, setIsVisibleModalAddInstance, addToast, hasTy
             <Col sm={10}>
               <Form.Control
                 type="text"
-                required
+                required={mbid.length === 0}
                 placeholder="Name"
                 id="name"
                 value={name}
                 onChange={(e) => handleNameChange(e.target.value)}
+                disabled={isDisabledName}
               ></Form.Control>
             </Col>
           </Form.Group>
@@ -118,6 +137,23 @@ const InstanceAddModal = ({ model, setIsVisibleModalAddInstance, addToast, hasTy
               </Col>
             </Row>
           }
+
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column sm={2}>
+              <abbr title="MusicBrainz ID">MBID</abbr>
+            </Form.Label>
+            <Col sm={10}>
+              <Form.Control
+                type="text"
+                required={name.length === 0}
+                placeholder="Import from MusicBrainz..."
+                id="mbid"
+                value={mbid}
+                onChange={(e) => handleMbidChange(e.target.value)}
+                disabled={isDisabledMbid}
+              ></Form.Control>
+            </Col>
+          </Form.Group>
 
           {(types.length > 0) &&
             <fieldset>
